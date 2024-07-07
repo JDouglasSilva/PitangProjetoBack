@@ -4,11 +4,11 @@ import cors from 'cors';
 const app = express();
 const port = 3000;
 
-// Middleware
+// Middleware(Futuramente)
 app.use(cors());
 app.use(express.json());
 
-// Rotas
+// Rotas(Futuramente)
 app.get('/', (req, res) => {
   res.send('Hello, world!');
 });
