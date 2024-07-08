@@ -1,3 +1,4 @@
+//Cria uma classe de erro, que extends o erro padrão, não preciso fazer uma class erro do zero
 class AppError extends Error {
     public readonly statusCode: number;
   
@@ -8,4 +9,3 @@ class AppError extends Error {
   }
   
   export default AppError;
-  

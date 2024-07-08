@@ -2,8 +2,14 @@ import { PrismaClient, Agendamento } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+interface CriarAgendamentoDTO {
+  nome: string;
+  dataNascimento: Date;
+  dataHora: Date;
+}
+
 class AgendamentoRepository {
-  async create(data: Omit<Agendamento, 'id' | 'realizado'>): Promise<Agendamento> {
+  async create(data: CriarAgendamentoDTO): Promise<Agendamento> {
     return prisma.agendamento.create({ data });
   }
 
