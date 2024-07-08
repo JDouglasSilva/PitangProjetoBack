@@ -12,6 +12,12 @@ class AgendamentoController {
     const agendamentos = await agendamentoService.getAll();
     return res.status(200).json(agendamentos);
   }
+
+  async getMonthlyCount(req: Request, res: Response): Promise<Response> {
+    const { year } = req.params;
+    const counts = await agendamentoService.getMonthlyCount(Number(year));
+    return res.status(200).json(counts);
+  }
 }
 
 export default new AgendamentoController();
