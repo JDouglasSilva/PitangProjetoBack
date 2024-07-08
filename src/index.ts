@@ -10,6 +10,7 @@ const intervaloEntreAgendamentos = 3599999; // 59 minutos e 59 segundos e 999 mi
 app.use(cors());
 app.use(express.json());
 
+// Rota para agendar um novo horário
 app.post('/agendar', async (req, res) => {
   const { nome, dataNascimento, dataHora } = req.body;
   const dataHoraAgendamento = new Date(dataHora);
@@ -82,6 +83,16 @@ app.post('/agendar', async (req, res) => {
     res.status(201).json(novoAgendamento);
   } catch (error) {
     res.status(500).json({ error: 'Erro ao criar o agendamento' });
+  }
+});
+
+// Nova rota para obter todos os agendamentos
+app.get('/agendamentos', async (req, res) => {
+  try {
+    const agendamentos = await prisma.agendamento.findMany();
+    res.status(200).json(agendamentos);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao obter os agendamentos' });
   }
 });
 
