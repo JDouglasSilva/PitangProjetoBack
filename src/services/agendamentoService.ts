@@ -88,6 +88,12 @@ class AgendamentoService {
 
     return dailyCounts;
   }
+  
+  async getByDay(year: number, month: number, day: number): Promise<Agendamento[]> {
+    const start = new Date(year, month - 1, day);
+    const end = new Date(year, month - 1, day, 23, 59, 59, 999);
+    return agendamentoRepository.findManyByDay(start, end);
+  }
 }
 
 export default new AgendamentoService();

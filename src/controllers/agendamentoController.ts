@@ -24,6 +24,13 @@ class AgendamentoController {
     const counts = await agendamentoService.getDailyCount(Number(year), Number(month));
     return res.status(200).json(counts);
   }
+
+  async getByDay(req: Request, res: Response): Promise<Response> {
+    const { year, month, day } = req.params;
+    const consultas = await agendamentoService.getByDay(Number(year), Number(month), Number(day));
+    return res.status(200).json(consultas);
+  }
+  
 }
 
 export default new AgendamentoController();
