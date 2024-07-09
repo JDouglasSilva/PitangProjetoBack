@@ -69,6 +69,25 @@ class AgendamentoService {
 
     return monthlyCounts;
   }
+
+  async getDailyCount(year: number, month: number): Promise<{ day: number, count: number }[]> {
+    const start = new Date(year, month - 1, 1);
+    const end = new Date(year, month, 0, 23, 59, 59, 999);
+    const agendamentos = await agendamentoRepository.findManyByDay(start, end);
+
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const dailyCounts = Array(daysInMonth).fill(0).map((_, index) => ({
+      day: index + 1,
+      count: 0,
+    }));
+
+    agendamentos.forEach(agendamento => {
+      const day = agendamento.dataHora.getDate();
+      dailyCounts[day - 1].count += 1;
+    });
+
+    return dailyCounts;
+  }
 }
 
 export default new AgendamentoService();
