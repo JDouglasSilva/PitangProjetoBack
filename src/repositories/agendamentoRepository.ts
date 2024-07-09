@@ -10,7 +10,6 @@ interface CriarAgendamentoDTO {
   conclusaoDoAgendamento?: boolean;
 }
 
-
 class AgendamentoRepository {
   async create(data: CriarAgendamentoDTO): Promise<Agendamento> {
     return prisma.agendamento.create({ data });
@@ -26,6 +25,13 @@ class AgendamentoRepository {
 
   async findAll(): Promise<Agendamento[]> {
     return prisma.agendamento.findMany();
+  }
+
+  async updateStatus(id: number, estadoDoAgendamento: boolean, conclusaoDoAgendamento: boolean): Promise<Agendamento> {
+    return prisma.agendamento.update({
+      where: { idAgendamento: id },
+      data: { estadoDoAgendamento, conclusaoDoAgendamento },
+    });
   }
 }
 

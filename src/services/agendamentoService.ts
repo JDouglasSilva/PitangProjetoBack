@@ -9,7 +9,7 @@ interface CriarAgendamentoDTO {
   dataNascimentoPaciente: Date;
   dataHoraAgendamento: Date;
   estadoDoAgendamento?: boolean;
-  conclusaoDoAgendamento?: string;
+  conclusaoDoAgendamento?: boolean;
 }
 
 class AgendamentoService {
@@ -93,7 +93,10 @@ class AgendamentoService {
     const end = new Date(year, month - 1, day, 23, 59, 59, 999);
     return agendamentoRepository.findManyByDay(start, end);
   }
+
+  async updateStatus(id: number, estadoDoAgendamento: boolean, conclusaoDoAgendamento: boolean): Promise<Agendamento> {
+    return agendamentoRepository.updateStatus(id, estadoDoAgendamento, conclusaoDoAgendamento);
+  }
 }
 
 export default new AgendamentoService();
-
