@@ -6,14 +6,14 @@ datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
-
 model Agendamento {
-  id             Int      @id @default(autoincrement())
-  nome           String
-  dataNascimento DateTime
-  dataHora       DateTime
-  realizado      Boolean  @default(false)
+  idAgendamento             Int      @id @default(autoincrement())
+  nomeDoPaciente            String
+  dataNascimentoPaciente    DateTime
+  dataHoraAgendamento       DateTime
+  estadoDoAgendamento       Boolean  @default(false)
+  conclusaoDoAgendamento    Boolean  @default(false)
 
-  //Deixa a busca mais rapdia
-  @@index([dataHora])
+  // Deixa a busca mais rápida
+  @@index([dataHoraAgendamento])
 }

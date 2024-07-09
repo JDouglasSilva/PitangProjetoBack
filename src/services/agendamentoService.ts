@@ -4,48 +4,47 @@ import AppError from '../errors/AppError';
 
 const intervaloEntreAgendamentos = 3599999; // 59 minutos e 59 segundos e 999 milissegundos em milissegundos
 
-//Interface para facilitarr o envio e uso destes dados, permitindo mudaçna no futuro de forma simples
-interface CriarAgendamentoDTO {//DTO = Objeto de Transferência de Dados
-  nome: string;
-  dataNascimento: Date;
-  dataHora: Date;
+interface CriarAgendamentoDTO {
+  nomeDoPaciente: string;
+  dataNascimentoPaciente: Date;
+  dataHoraAgendamento: Date;
+  estadoDoAgendamento?: boolean;
+  conclusaoDoAgendamento?: string;
 }
 
 class AgendamentoService {
-  async create({ nome, dataNascimento, dataHora }: CriarAgendamentoDTO): Promise<Agendamento> {
-    const dataHoraAgendamento = new Date(dataHora);
+  async create({ nomeDoPaciente, dataNascimentoPaciente, dataHoraAgendamento }: CriarAgendamentoDTO): Promise<Agendamento> {
+    const dataHora = new Date(dataHoraAgendamento);
 
-    const inicioDoDia = new Date(dataHoraAgendamento);
+    const inicioDoDia = new Date(dataHora);
     inicioDoDia.setHours(0, 0, 0, 0);
 
-    const fimDoDia = new Date(dataHoraAgendamento);
+    const fimDoDia = new Date(dataHora);
     fimDoDia.setHours(23, 59, 59, 999);
 
-    // Verifica se tem mais de 20 agendamentos no dia
     const agendamentosDoDia = await agendamentoRepository.findManyByDay(inicioDoDia, fimDoDia);
     
     if (agendamentosDoDia.length >= 20) {
       throw new AppError('Não há vagas disponíveis para este dia');
     }
-    // Verifica quantos agendamentos existem para o horário X, se existir 2, retorna erro, se existir um, permite cadastro
-    // Se não existir agendamento ele verifica se tem algum marcado no intervalo de tempo de 1 hora, que impeça a criação de um novo
-    const agendamentosNoHorario = await agendamentoRepository.findByDate(dataHoraAgendamento);
+
+    const agendamentosNoHorario = await agendamentoRepository.findByDate(dataHora);
     if (agendamentosNoHorario.length >= 2) {
       throw new AppError('Horário já está cheio');
     }
 
     if (agendamentosNoHorario.length === 1) {
-      return agendamentoRepository.create({ nome, dataNascimento: new Date(dataNascimento), dataHora: dataHoraAgendamento });
+      return agendamentoRepository.create({ nomeDoPaciente, dataNascimentoPaciente: new Date(dataNascimentoPaciente), dataHoraAgendamento: dataHora });
     }
 
     const agendamentosProximos = await agendamentoRepository.findManyByDay(
-      new Date(dataHoraAgendamento.getTime() - intervaloEntreAgendamentos),
-      new Date(dataHoraAgendamento.getTime() + intervaloEntreAgendamentos)
+      new Date(dataHora.getTime() - intervaloEntreAgendamentos),
+      new Date(dataHora.getTime() + intervaloEntreAgendamentos)
     );
     if (agendamentosProximos.length > 0) {
       throw new AppError('Horário indisponível devido a agendamentos próximos');
     }
-    return agendamentoRepository.create({ nome, dataNascimento: new Date(dataNascimento), dataHora: dataHoraAgendamento });
+    return agendamentoRepository.create({ nomeDoPaciente, dataNascimentoPaciente: new Date(dataNascimentoPaciente), dataHoraAgendamento: dataHora });
   }
 
   async getAll(): Promise<Agendamento[]> {
@@ -63,7 +62,7 @@ class AgendamentoService {
     }));
 
     agendamentos.forEach(agendamento => {
-      const month = agendamento.dataHora.getMonth();
+      const month = agendamento.dataHoraAgendamento.getMonth();
       monthlyCounts[month].count += 1;
     });
 
@@ -82,13 +81,13 @@ class AgendamentoService {
     }));
 
     agendamentos.forEach(agendamento => {
-      const day = agendamento.dataHora.getDate();
+      const day = agendamento.dataHoraAgendamento.getDate();
       dailyCounts[day - 1].count += 1;
     });
 
     return dailyCounts;
   }
-  
+
   async getByDay(year: number, month: number, day: number): Promise<Agendamento[]> {
     const start = new Date(year, month - 1, day);
     const end = new Date(year, month - 1, day, 23, 59, 59, 999);
@@ -97,3 +96,4 @@ class AgendamentoService {
 }
 
 export default new AgendamentoService();
+

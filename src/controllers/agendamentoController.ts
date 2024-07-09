@@ -3,8 +3,8 @@ import agendamentoService from '../services/agendamentoService';
 
 class AgendamentoController {
   async create(req: Request, res: Response): Promise<Response> {
-    const { nome, dataNascimento, dataHora } = req.body;
-    const novoAgendamento = await agendamentoService.create({ nome, dataNascimento: new Date(dataNascimento), dataHora: new Date(dataHora) });
+    const { nomeDoPaciente, dataNascimentoPaciente, dataHoraAgendamento } = req.body;
+    const novoAgendamento = await agendamentoService.create({ nomeDoPaciente, dataNascimentoPaciente: new Date(dataNascimentoPaciente), dataHoraAgendamento: new Date(dataHoraAgendamento) });
     return res.status(201).json(novoAgendamento);
   }
 
