@@ -51,10 +51,34 @@ class AgendamentoService {
     return agendamentoRepository.findAll();
   }
 
-  async getMonthlyCount(year: number): Promise<{ month: number, count: number }[]> {
-    const start = new Date(year, 0, 1);
-    const end = new Date(year + 1, 0, 1);
+  async getAgendamentos(year: number, month?: number, day?: number): Promise<any> {
+    const start = new Date(year, month ? month - 1 : 0, day || 1);
+    const end = day
+      ? new Date(year, month! - 1, day, 23, 59, 59, 999)
+      : month
+      ? new Date(year, month, 0, 23, 59, 59, 999)
+      : new Date(year + 1, 0, 1);
+
     const agendamentos = await agendamentoRepository.findManyByDay(start, end);
+
+    if (day) {
+      return agendamentos;
+    }
+
+    if (month) {
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const dailyCounts = Array(daysInMonth).fill(0).map((_, index) => ({
+        day: index + 1,
+        count: 0,
+      }));
+
+      agendamentos.forEach(agendamento => {
+        const day = agendamento.dataHoraAgendamento.getDate();
+        dailyCounts[day - 1].count += 1;
+      });
+
+      return dailyCounts;
+    }
 
     const monthlyCounts = Array(12).fill(0).map((_, index) => ({
       month: index + 1,
@@ -67,31 +91,6 @@ class AgendamentoService {
     });
 
     return monthlyCounts;
-  }
-
-  async getDailyCount(year: number, month: number): Promise<{ day: number, count: number }[]> {
-    const start = new Date(year, month - 1, 1);
-    const end = new Date(year, month, 0, 23, 59, 59, 999);
-    const agendamentos = await agendamentoRepository.findManyByDay(start, end);
-
-    const daysInMonth = new Date(year, month, 0).getDate();
-    const dailyCounts = Array(daysInMonth).fill(0).map((_, index) => ({
-      day: index + 1,
-      count: 0,
-    }));
-
-    agendamentos.forEach(agendamento => {
-      const day = agendamento.dataHoraAgendamento.getDate();
-      dailyCounts[day - 1].count += 1;
-    });
-
-    return dailyCounts;
-  }
-
-  async getByDay(year: number, month: number, day: number): Promise<Agendamento[]> {
-    const start = new Date(year, month - 1, day);
-    const end = new Date(year, month - 1, day, 23, 59, 59, 999);
-    return agendamentoRepository.findManyByDay(start, end);
   }
 
   async updateStatus(id: number, estadoDoAgendamento: boolean, conclusaoDoAgendamento: boolean): Promise<Agendamento> {

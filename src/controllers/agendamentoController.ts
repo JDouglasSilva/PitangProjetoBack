@@ -13,22 +13,10 @@ class AgendamentoController {
     return res.status(200).json(agendamentos);
   }
 
-  async getMonthlyCount(req: Request, res: Response): Promise<Response> {
-    const { year } = req.params;
-    const counts = await agendamentoService.getMonthlyCount(Number(year));
-    return res.status(200).json(counts);
-  }
-
-  async getDailyCount(req: Request, res: Response): Promise<Response> {
-    const { year, month } = req.params;
-    const counts = await agendamentoService.getDailyCount(Number(year), Number(month));
-    return res.status(200).json(counts);
-  }
-
-  async getByDay(req: Request, res: Response): Promise<Response> {
+  async getAgendamentos(req: Request, res: Response): Promise<Response> {
     const { year, month, day } = req.params;
-    const consultas = await agendamentoService.getByDay(Number(year), Number(month), Number(day));
-    return res.status(200).json(consultas);
+    const agendamentos = await agendamentoService.getAgendamentos(Number(year), month ? Number(month) : undefined, day ? Number(day) : undefined);
+    return res.status(200).json(agendamentos);
   }
 
   async updateStatus(req: Request, res: Response): Promise<Response> {
