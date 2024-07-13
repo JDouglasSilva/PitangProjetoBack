@@ -25,6 +25,12 @@ class AgendamentoController {
     const agendamentoAtualizado = await agendamentoService.updateStatus(Number(id), estadoDoAgendamento, conclusaoDoAgendamento);
     return res.status(200).json(agendamentoAtualizado);
   }
+
+  async getConsultasPorDia(req: Request, res: Response): Promise<Response> {
+    const { year, month, day } = req.params;
+    const consultas = await agendamentoService.getConsultasPorDia(Number(year), Number(month), Number(day));
+    return res.status(200).json(consultas);
+  }
 }
 
 export default new AgendamentoController();
