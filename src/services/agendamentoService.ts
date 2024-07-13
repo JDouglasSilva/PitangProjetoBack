@@ -94,6 +94,9 @@ class AgendamentoService {
   }
 
   async updateStatus(id: number, estadoDoAgendamento: boolean, conclusaoDoAgendamento: boolean): Promise<Agendamento> {
+    if (!estadoDoAgendamento && conclusaoDoAgendamento) {
+      throw new AppError('Não é possível concluir um agendamento que não foi realizado');
+    }
     return agendamentoRepository.updateStatus(id, estadoDoAgendamento, conclusaoDoAgendamento);
   }
 }
