@@ -1,3 +1,5 @@
+// Path: PitangProjeto\backend\src\controllers\agendamentoController.ts
+
 import { Request, Response } from 'express';
 import agendamentoService from '../services/agendamentoService';
 
@@ -30,6 +32,12 @@ class AgendamentoController {
     const { year, month, day } = req.params;
     const consultas = await agendamentoService.getConsultasPorDia(Number(year), Number(month), Number(day));
     return res.status(200).json(consultas);
+  }
+
+  async getFullDays(req: Request, res: Response): Promise<Response> {
+    const { year, month } = req.params;
+    const agendamentos = await agendamentoService.getAgendamentos(Number(year), Number(month));
+    return res.status(200).json(agendamentos);
   }
 }
 
