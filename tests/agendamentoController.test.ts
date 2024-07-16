@@ -3,14 +3,25 @@ import app from '../src/app';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+let agendamentoId: number | null = null;
 
 describe('Agendamento Controller', () => {
   beforeAll(async () => {
-    await prisma.agendamento.deleteMany(); // Limpa a tabela de agendamentos antes dos testes
+    // A linha a seguir apaga os dados do banco de dados, usar com cuidado
+    //await prisma.agendamento.deleteMany();
   });
 
   afterAll(async () => {
     await prisma.$disconnect();
+  });
+
+  afterEach(async () => {
+    if (agendamentoId) {
+      await prisma.agendamento.delete({
+        where: { idAgendamento: agendamentoId },
+      });
+      agendamentoId = null;
+    }
   });
 
   it('deve criar um novo agendamento', async () => {
@@ -19,12 +30,14 @@ describe('Agendamento Controller', () => {
       .send({
         nomeDoPaciente: 'John Doe',
         dataNascimentoPaciente: '1990-01-01T00:00:00.000Z',
-        dataHoraAgendamento: '2024-07-20T10:00:00.000Z'
+        dataHoraAgendamento: '2029-07-20T10:00:00.000Z'
       });
 
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('idAgendamento');
     expect(response.body.nomeDoPaciente).toBe('John Doe');
+
+    agendamentoId = response.body.idAgendamento;
   });
 
   it('deve retornar todos os agendamentos', async () => {
@@ -45,7 +58,7 @@ describe('Agendamento Controller', () => {
       .send({
         nomeDoPaciente: 'Jane Doe',
         dataNascimentoPaciente: '1990-01-01T00:00:00.000Z',
-        dataHoraAgendamento: '2024-07-21T10:00:00.000Z'
+        dataHoraAgendamento: '2029-07-21T10:00:00.000Z'
       });
 
     const response = await request(app)
@@ -58,6 +71,9 @@ describe('Agendamento Controller', () => {
     expect(response.status).toBe(200);
     expect(response.body.estadoDoAgendamento).toBe(true);
     expect(response.body.conclusaoDoAgendamento).toBe(true);
+
+    // Define agendamentoId para excluir o agendamento criado no afterEach
+    agendamentoId = novoAgendamento.body.idAgendamento;
   });
 
   it('deve retornar consultas por dia', async () => {
