@@ -9,7 +9,8 @@ module.exports = {
   ],
   coveragePathIgnorePatterns: [
     "/node_modules/",
-    "src/server.ts"
+    "src/server.ts",
+    "src/scripts/"
   ],
   coverageDirectory: 'coverage', 
   coverageReporters: ['text', 'lcov'], 
