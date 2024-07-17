@@ -15,7 +15,7 @@ const generateFutureDate = (): string => {
 describe('Agendamento Controller', () => {
   beforeAll(async () => {
     // A linha a seguir apaga os dados do banco de dados, usar com cuidado
-    await prisma.agendamento.deleteMany();
+    //await prisma.agendamento.deleteMany();
   });
 
   afterAll(async () => {
