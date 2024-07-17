@@ -1,4 +1,4 @@
-// Path: PitangProjeto\backend\src\routes\agendamentoRoutes.ts
+// PitangProjeto\backend\src\routes\agendamentoRoutes.ts
 
 import { Router } from 'express';
 import agendamentoController from '../controllers/agendamentoController';

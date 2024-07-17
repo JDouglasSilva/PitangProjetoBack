@@ -1,4 +1,4 @@
-// Path: PitangProjeto\backend\src\controllers\agendamentoController.ts
+// PitangProjeto\backend\src\controllers\agendamentoController.ts
 
 import { Request, Response } from 'express';
 import agendamentoService from '../services/agendamentoService';

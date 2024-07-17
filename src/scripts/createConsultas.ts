@@ -1,3 +1,5 @@
+// PitangProjeto\backend\src\scripts\createConsultas.ts
+
 import axios from 'axios';
 import { addDays, differenceInDays } from 'date-fns';
 import dotenv from 'dotenv';
@@ -45,9 +47,9 @@ const randomAgendamentoDateWithinDays = (startDay: number, endDay: number) => {
 
 // Função principal para criar várias consultas seguindo as proporções especificadas
 const main = async () => {
-  const numConsultas = 1000;
+  const numConsultas = 100;
 
-  // Distribuição dos agendamentos fando preferencia para escolher dias proximos.
+  // Distribuição dos agendamentos dando preferencia para escolher dias proximos.
   const consultasPrimeiros30Dias = Math.floor(numConsultas * 2 / 3);
   const consultasProximos30Dias = Math.floor((numConsultas - consultasPrimeiros30Dias) * 2 / 3);
   const consultasUltimos30Dias = numConsultas - consultasPrimeiros30Dias - consultasProximos30Dias;

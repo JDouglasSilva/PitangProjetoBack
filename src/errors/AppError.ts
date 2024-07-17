@@ -1,3 +1,5 @@
+// PitangProjeto\backend\src\errors\AppError.ts
+
 //Cria uma classe de erro, que extends o erro padrão, não preciso fazer uma class erro do zero
 class AppError extends Error {
     public readonly statusCode: number;
